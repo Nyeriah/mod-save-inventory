@@ -1,0 +1,44 @@
+#
+# Copyright (C) 2016+ AzerothCore <www.azerothcore.org>, released under GNU AGPL v3 license: https://github.com/azerothcore/azerothcore-wotlk/blob/master/LICENSE-AGPL3
+#
+
+[worldserver]
+
+########################################
+# MOD-SAVE-INVENTORY
+########################################
+#
+#    ModSaveInventory.Enable
+#        Description: Enables the module.
+#        Default:     1 - Enabled
+#                     0 - Disabled
+#
+
+ModSaveInventory.Enable = 1
+
+#
+#
+#    ModSaveInventory.MinItemQuality
+#        Description: Minimum quality required to save items after looting.
+#        Default:     2 - Uncommon (Green)
+#        Values:      0 - Poor (Gray)
+#                     1 - Normal (White)
+#                     2 - Uncommon (Green)
+#                     3 - Rare (Blue)
+#                     4 - Epic (Purple)
+#                     5 - Legendary (Orange)
+#                     6 - Artifact (Light Yellow)
+#                     7 - Heirloom
+#
+
+ModSaveInventory.MinItemQuality = 2
+
+#
+#
+#    ModSaveInventory.AlwaysSaveList
+#        Description: List of items separated by space that will always be saved regardless of the minimum quality set.
+#        Example:     "16328 16329"
+#        Default:     "" - None, empty list.
+#
+
+ModSaveInventory.AlwaysSaveList = ""
