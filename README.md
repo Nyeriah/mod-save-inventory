@@ -37,7 +37,8 @@ This module offers two options to select which items to automatically save once 
        Description: Minimum quality required to save items after looting.
        Default:     2 - Uncommon (Green)
        
-       Possible Values:      0 - Poor (Gray)
+       Possible Values:
+                    0 - Poor (Gray)
                     1 - Normal (White)
                     2 - Uncommon (Green)
                     3 - Rare (Blue)
