@@ -1,6 +1,6 @@
 # Save Inventory Module
 
-This is a module for [AzerothCore](http://www.azerothcore.org) that adds the option to instantly save items after they have been looted, preventing them from being lost in case of wipes. 
+This is a module for [AzerothCore](http://www.azerothcore.org) that adds the option to instantly save items after they have been looted, preventing them from being lost in case of crashes. 
 
 ## Requirements
 
