@@ -1,25 +1,64 @@
-# SKELETON - Module template
+# Save Inventory Module
 
-[English](README.md) | [Español](README_ES.md)
+This is a module for [AzerothCore](http://www.azerothcore.org) that adds the option to instantly save items after they have been looted, preventing them from being lost in case of wipes. 
+
+## Requirements
+
+This module currently requires:
+
+AzerothCore v1.0.2+
+
+## How to install
+
+### 1) Simply place the module under the `modules` folder of your AzerothCore source folder.
+
+You can do clone it via git under the azerothcore/modules directory:
+
+```sh
+cd path/to/azerothcore/modules
+git clone https://github.com/Nyeriah/mod-save-inventory.git
+```
 
 
-## How to create your own module
+### 2) Re-run cmake and launch a clean build of AzerothCore
 
-1. Use the script `create_module.sh` located in [`modules/`](https://github.com/azerothcore/azerothcore-wotlk/tree/master/modules) to start quickly with all the files you need and your git repo configured correctly (heavily recommended).
-1. You can then use these scripts to start your project: https://github.com/azerothcore/azerothcore-boilerplates
-1. Do not hesitate to compare with some of our newer/bigger/famous modules.
-1. Edit the `README.md` and other files (`include.sh` etc...) to fit your module. Note: the README is automatically created from `README_example.md` when you use the script `create_module.sh`.
-1. Publish your module to our [catalogue](https://github.com/azerothcore/modules-catalogue).
+**That's it.**
+
+### (Optional) Edit module configuration
+
+If you need to change the module configuration, go to your server configuration folder (e.g. **etc**), copy `mod-save-inventory.conf.dist` to `mod-save-inventory.conf` and edit it as you prefer.
+
+### Configuration Options
+
+This module offers two options to select which items to automatically save once looted:
+
+1) ModSaveItenventory.MinItemQuality
+       Description: Minimum quality required to save items after looting.
+       Default:     2 - Uncommon (Green)
+       Values:      0 - Poor (Gray)
+                    1 - Normal (White)
+                    2 - Uncommon (Green)
+                    3 - Rare (Blue)
+                    4 - Epic (Purple)
+                    5 - Legendary (Orange)
+                    6 - Artifact (Light Yellow)
+                    7 - Heirloom
+
+2)ModSaveItenventory.AlwaysSaveList
+        Description: List of items separated by space that will always be saved regardless of the minimum quality set.
+        Example:     "16328 16329"
+        Default:     "" - None, empty list.
 
 
-## How to test your module?
+## License
 
-Disable PCH (precompiled headers) and try to compile. To disable PCH, set `-DNOPCH=1` with Cmake (more info [here](http://www.azerothcore.org/wiki/CMake-options)).
+This module is released under the [GNU AGPL license](https://github.com/azerothcore/mod-transmog/blob/master/LICENSE)
 
-If you forgot some headers, it is time to add them!
+## Authors
 
-## Licensing
+- [Nyeriah](https://github.com/Nyeriah)
 
-The default license of the skeleton-module template is the MIT but you can use a different license for your own modules.
 
-So modules can also be kept private. However, if you need to add new hooks to the core, as well as improving existing ones, you have to share your improvements because the main core is released under the AGPL license. Please [provide a PR](https://www.azerothcore.org/wiki/How-to-create-a-PR) if that is the case.
+
+
+
