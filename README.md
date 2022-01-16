@@ -33,9 +33,11 @@ If you need to change the module configuration, go to your server configuration 
 This module offers two options to select which items to automatically save once looted:
 
 1) ModSaveItenventory.MinItemQuality
+
        Description: Minimum quality required to save items after looting.
        Default:     2 - Uncommon (Green)
-       Values:      0 - Poor (Gray)
+       
+       Possible Values:      0 - Poor (Gray)
                     1 - Normal (White)
                     2 - Uncommon (Green)
                     3 - Rare (Blue)
@@ -44,7 +46,8 @@ This module offers two options to select which items to automatically save once 
                     6 - Artifact (Light Yellow)
                     7 - Heirloom
 
-2)ModSaveItenventory.AlwaysSaveList
+2) ModSaveItenventory.AlwaysSaveList
+
         Description: List of items separated by space that will always be saved regardless of the minimum quality set.
         Example:     "16328 16329"
         Default:     "" - None, empty list.
