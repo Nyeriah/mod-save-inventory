@@ -16,6 +16,11 @@ public:
 
     void OnLootItem(Player* player, Item* item, uint32 /*count*/, ObjectGuid /*lootguid*/)
     {
+        if (!item)
+        {
+            return;
+        }
+
         if (ShouldSaveItem(item))
         {
             CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
