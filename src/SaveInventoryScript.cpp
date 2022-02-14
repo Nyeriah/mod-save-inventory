@@ -7,6 +7,7 @@
 #include "Config.h"
 #include "Chat.h"
 #include "Tokenize.h"
+#include "TaskScheduler.h"
 
 // Add player scripts
 class ModSaveInventoryPlayerScript : public PlayerScript
@@ -23,10 +24,21 @@ public:
 
         if (ShouldSaveItem(item))
         {
-            CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
-            player->SaveInventoryAndGoldToDB(trans);
-            CharacterDatabase.CommitTransaction(trans);
+            // Prevent triggering multiple saves if we're looting multiple valid items at once.
+            _scheduler.CancelAll();
+
+            _scheduler.Schedule(3s, [player](TaskContext /*context*/)
+            {
+                CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
+                player->SaveInventoryAndGoldToDB(trans);
+                CharacterDatabase.CommitTransaction(trans);
+            });
         }
+    }
+
+    void OnUpdate(Player* /*player*/, uint32 diff) override
+    {
+        _scheduler.Update(diff);
     }
 
     bool ShouldSaveItem(Item* item)
@@ -60,6 +72,9 @@ public:
 
         return false;
     }
+
+private:
+    TaskScheduler _scheduler;
 };
 
 void AddSaveInventoryScript()
