@@ -20,7 +20,7 @@ class ModSaveInventoryPlayerScript : public PlayerScript
 public:
     ModSaveInventoryPlayerScript() : PlayerScript("ModSaveInventoryPlayerScript") { }
 
-    void OnLootItem(Player* player, Item* item, uint32 /*count*/, ObjectGuid /*lootguid*/) override
+    void OnLootItem(Player* /*player*/, Item* item, uint32 /*count*/, ObjectGuid /*lootguid*/) override
     {
         if (!item)
         {
