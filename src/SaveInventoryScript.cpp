@@ -49,6 +49,11 @@ public:
         }
     }
 
+    void OnLogout(Player* /*player*/) override
+    {
+        _events.Reset();
+    }
+
     bool ShouldSaveItem(Item* item)
     {
         if (!sConfigMgr->GetOption<bool>("ModSaveInventory.Enable", true))
