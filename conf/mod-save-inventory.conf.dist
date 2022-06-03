@@ -42,3 +42,18 @@ ModSaveInventory.MinItemQuality = 2
 #
 
 ModSaveInventory.AlwaysSaveList = ""
+
+#
+#    ModSaveInventory.SaveInterval
+#        Description: Sets the interval between saves. No interval leads to SQL deadlocks when too many items are looted at once.
+#        Default:     5000 milliseconds
+#
+
+ModSaveInventory.SaveInterval = 5000
+
+#    ModSaveInventory.LogLootedItems
+#        Description: Print the looted items to the log file.
+#        Default:     1 - Enabled
+#
+
+ModSaveInventory.LogLootedItems = 1

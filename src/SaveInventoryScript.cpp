@@ -9,18 +9,15 @@
 #include "Tokenize.h"
 #include "EventMap.h"
 
-enum Events
-{
-    EVENT_SAVE_INVENTORY = 1
-};
-
-// Add player scripts
 class ModSaveInventoryPlayerScript : public PlayerScript
 {
 public:
-    ModSaveInventoryPlayerScript() : PlayerScript("ModSaveInventoryPlayerScript") { }
+    ModSaveInventoryPlayerScript() : PlayerScript("ModSaveInventoryPlayerScript")
+    {
+        _checkSaveTimer = 0;
+    }
 
-    void OnLootItem(Player* /*player*/, Item* item, uint32 /*count*/, ObjectGuid /*lootguid*/) override
+    void OnLootItem(Player* player, Item* item, uint32 /*count*/, ObjectGuid /*lootguid*/) override
     {
         if (!item)
         {
@@ -29,29 +26,35 @@ public:
 
         if (ShouldSaveItem(item))
         {
-            // Prevent triggering multiple saves if we're looting multiple valid items at once.
-            _events.RescheduleEvent(EVENT_SAVE_INVENTORY, 3s);
+            _checkSaveTimer = sConfigMgr->GetOption<uint32>("ModSaveInventory.SaveInterval", 5000);
+            if (sConfigMgr->GetOption<bool>("ModSaveInventory.LogLootedItems", true))
+            {
+                LOG_INFO("items", "SaveInventory: Player {} ({}) looted item {}", player->GetName(), player->GetGUID().GetCounter(), item->GetEntry());
+            }
         }
     }
 
     void OnUpdate(Player* player, uint32 diff) override
     {
-        if (!_events.Empty())
+        if (_checkSaveTimer)
         {
-            _events.Update(diff);
-
-            if (_events.ExecuteEvent() == EVENT_SAVE_INVENTORY)
+            if (_checkSaveTimer <= diff)
             {
                 CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
                 player->SaveInventoryAndGoldToDB(trans);
                 CharacterDatabase.CommitTransaction(trans);
+                _checkSaveTimer = 0;
+            }
+            else
+            {
+                _checkSaveTimer -= diff;
             }
         }
     }
 
     void OnLogout(Player* /*player*/) override
     {
-        _events.Reset();
+        _checkSaveTimer = 0;
     }
 
     bool ShouldSaveItem(Item* item)
@@ -87,7 +90,7 @@ public:
     }
 
 private:
-    EventMap _events;
+    uint32 _checkSaveTimer;
 };
 
 void AddSaveInventoryScript()
