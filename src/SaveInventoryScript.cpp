@@ -29,7 +29,7 @@ public:
             _checkSaveTimer = sConfigMgr->GetOption<uint32>("ModSaveInventory.SaveInterval", 5000);
             if (sConfigMgr->GetOption<bool>("ModSaveInventory.LogLootedItems", true))
             {
-                LOG_INFO("items", "SaveInventory: Player {} ({}) looted item {}", player->GetName(), player->GetGUID().GetCounter(), item->GetEntry());
+                LOG_INFO("items", "SaveInventory: Player {} ({}) looted item {} (GUID: {})", player->GetName(), player->GetGUID().GetCounter(), item->GetEntry(), item->GetGUID().GetCounter());
             }
         }
     }
