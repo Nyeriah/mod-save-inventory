@@ -34,6 +34,39 @@ public:
         }
     }
 
+    void OnCreateItem(Player* player, Item* item, uint32 /*count*/) override
+    {
+        if (!item)
+        {
+            return;
+        }
+
+        if (ShouldSaveItem(item))
+        {
+            _checkSaveTimer = sConfigMgr->GetOption<uint32>("ModSaveInventory.SaveInterval", 5000);
+            if (sConfigMgr->GetOption<bool>("ModSaveInventory.LogLootedItems", true))
+            {
+                LOG_INFO("items", "SaveInventory: (IC) Player {} ({}) looted item {} (GUID: {})", player->GetName(), player->GetGUID().GetCounter(), item->GetEntry(), item->GetGUID().GetCounter());
+            }
+        }
+    }
+    void OnAfterStoreOrEquipNewItem(Player* player, uint32 /*vendorslot*/, Item* item, uint8 /*count*/, uint8 /*bag*/, uint8 /*slot*/, ItemTemplate const* /*pProto*/, Creature* /*pVendor*/, VendorItem const* /*crItem*/, bool /*bStore*/) override
+    {
+        if (!item)
+        {
+            return;
+        }
+
+        if (ShouldSaveItem(item))
+        {
+            _checkSaveTimer = sConfigMgr->GetOption<uint32>("ModSaveInventory.SaveInterval", 5000);
+            if (sConfigMgr->GetOption<bool>("ModSaveInventory.LogLootedItems", true))
+            {
+                LOG_INFO("items", "SaveInventory: (ML) Player {} ({}) looted item {} (GUID: {})", player->GetName(), player->GetGUID().GetCounter(), item->GetEntry(), item->GetGUID().GetCounter());
+            }
+        }
+    }
+
     void OnUpdate(Player* player, uint32 diff) override
     {
         if (_checkSaveTimer)
