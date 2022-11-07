@@ -34,6 +34,23 @@ public:
         }
     }
 
+    void OnStoreNewItem(Player* player, Item* item, uint32 /*count*/) override
+    {
+        if (!item)
+        {
+            return;
+        }
+
+        if (ShouldSaveItem(item))
+        {
+            _checkSaveTimer = sConfigMgr->GetOption<uint32>("ModSaveInventory.SaveInterval", 5000);
+            if (sConfigMgr->GetOption<bool>("ModSaveInventory.LogLootedItems", true))
+            {
+                LOG_INFO("items", "SaveInventory: Player {} ({}) looted item {} (GUID: {})", player->GetName(), player->GetGUID().GetCounter(), item->GetEntry(), item->GetGUID().GetCounter());
+            }
+        }
+    }
+
     void OnCreateItem(Player* player, Item* item, uint32 /*count*/) override
     {
         if (!item)
@@ -46,7 +63,7 @@ public:
             _checkSaveTimer = sConfigMgr->GetOption<uint32>("ModSaveInventory.SaveInterval", 5000);
             if (sConfigMgr->GetOption<bool>("ModSaveInventory.LogLootedItems", true))
             {
-                LOG_INFO("items", "SaveInventory: (IC) Player {} ({}) looted item {} (GUID: {})", player->GetName(), player->GetGUID().GetCounter(), item->GetEntry(), item->GetGUID().GetCounter());
+                LOG_INFO("items", "SaveInventory: Player {} ({}) looted item {} (GUID: {})", player->GetName(), player->GetGUID().GetCounter(), item->GetEntry(), item->GetGUID().GetCounter());
             }
         }
     }
@@ -62,7 +79,7 @@ public:
             _checkSaveTimer = sConfigMgr->GetOption<uint32>("ModSaveInventory.SaveInterval", 5000);
             if (sConfigMgr->GetOption<bool>("ModSaveInventory.LogLootedItems", true))
             {
-                LOG_INFO("items", "SaveInventory: (ML) Player {} ({}) looted item {} (GUID: {})", player->GetName(), player->GetGUID().GetCounter(), item->GetEntry(), item->GetGUID().GetCounter());
+                LOG_INFO("items", "SaveInventory: Player {} ({}) looted item {} (GUID: {})", player->GetName(), player->GetGUID().GetCounter(), item->GetEntry(), item->GetGUID().GetCounter());
             }
         }
     }
