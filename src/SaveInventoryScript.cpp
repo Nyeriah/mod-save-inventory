@@ -91,6 +91,7 @@ public:
             if (_checkSaveTimer <= diff)
             {
                 CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
+                player->_SaveSkills(trans);
                 player->SaveInventoryAndGoldToDB(trans);
                 CharacterDatabase.CommitTransaction(trans);
                 _checkSaveTimer = 0;
