@@ -53,6 +53,10 @@ This module offers two options to select which items to automatically save once 
         Example:     "16328 16329"
         Default:     "" - None, empty list.
 
+### 3) Add the `Appender` and `Logger` from below to your `worldserver.conf`
+
+        Appender.Items=2,5,15,LootItem_%s.log
+        Logger.items= 4,Items
 
 ## License
 
