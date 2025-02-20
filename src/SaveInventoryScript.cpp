@@ -17,7 +17,7 @@ public:
         _checkSaveTimer = 0;
     }
 
-    void OnLootItem(Player* player, Item* item, uint32 /*count*/, ObjectGuid /*lootguid*/) override
+    void OnPlayerLootItem(Player* player, Item* item, uint32 /*count*/, ObjectGuid /*lootguid*/) override
     {
         if (!item)
         {
@@ -34,7 +34,7 @@ public:
         }
     }
 
-    void OnStoreNewItem(Player* player, Item* item, uint32 /*count*/) override
+    void OnPlayerStoreNewItem(Player* player, Item* item, uint32 /*count*/) override
     {
         if (!item)
         {
@@ -51,7 +51,7 @@ public:
         }
     }
 
-    void OnCreateItem(Player* player, Item* item, uint32 /*count*/) override
+    void OnPlayerCreateItem(Player* player, Item* item, uint32 /*count*/) override
     {
         if (!item)
         {
@@ -67,7 +67,7 @@ public:
             }
         }
     }
-    void OnAfterStoreOrEquipNewItem(Player* player, uint32 /*vendorslot*/, Item* item, uint8 /*count*/, uint8 /*bag*/, uint8 /*slot*/, ItemTemplate const* /*pProto*/, Creature* /*pVendor*/, VendorItem const* /*crItem*/, bool /*bStore*/) override
+    void OnPlayerAfterStoreOrEquipNewItem(Player* player, uint32 /*vendorslot*/, Item* item, uint8 /*count*/, uint8 /*bag*/, uint8 /*slot*/, ItemTemplate const* /*pProto*/, Creature* /*pVendor*/, VendorItem const* /*crItem*/, bool /*bStore*/) override
     {
         if (!item)
         {
@@ -84,7 +84,7 @@ public:
         }
     }
 
-    void OnUpdate(Player* player, uint32 diff) override
+    void OnPlayerUpdate(Player* player, uint32 diff) override
     {
         if (_checkSaveTimer)
         {
@@ -103,7 +103,7 @@ public:
         }
     }
 
-    void OnLogout(Player* /*player*/) override
+    void OnPlayerLogout(Player* /*player*/) override
     {
         _checkSaveTimer = 0;
     }
