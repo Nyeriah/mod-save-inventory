@@ -4,9 +4,11 @@
 
 #include "ScriptMgr.h"
 #include "Player.h"
+#include "Creature.h"
 #include "Config.h"
 #include "Chat.h"
 #include "Tokenize.h"
+#include "StringFormat.h"
 #include "EventMap.h"
 
 class ModSaveInventoryPlayerScript : public PlayerScript
@@ -17,71 +19,30 @@ public:
         _checkSaveTimer = 0;
     }
 
-    void OnPlayerLootItem(Player* player, Item* item, uint32 /*count*/, ObjectGuid /*lootguid*/) override
+    void OnPlayerLootItem(Player* player, Item* item, uint32 /*count*/, ObjectGuid lootguid) override
     {
-        if (!item)
-        {
-            return;
-        }
-
-        if (ShouldSaveItem(item))
-        {
-            _checkSaveTimer = sConfigMgr->GetOption<uint32>("ModSaveInventory.SaveInterval", 5000);
-            if (sConfigMgr->GetOption<bool>("ModSaveInventory.LogLootedItems", true))
-            {
-                LOG_INFO("items", "SaveInventory: Player {} ({}) looted item {} (GUID: {})", player->GetName(), player->GetGUID().GetCounter(), item->GetEntry(), item->GetGUID().GetCounter());
-            }
-        }
+        ScheduleSaveAndLog(player, item, "looted", DescribeLootSource(lootguid));
     }
 
     void OnPlayerStoreNewItem(Player* player, Item* item, uint32 /*count*/) override
     {
-        if (!item)
-        {
-            return;
-        }
-
-        if (ShouldSaveItem(item))
-        {
-            _checkSaveTimer = sConfigMgr->GetOption<uint32>("ModSaveInventory.SaveInterval", 5000);
-            if (sConfigMgr->GetOption<bool>("ModSaveInventory.LogLootedItems", true))
-            {
-                LOG_INFO("items", "SaveInventory: Player {} ({}) looted item {} (GUID: {})", player->GetName(), player->GetGUID().GetCounter(), item->GetEntry(), item->GetGUID().GetCounter());
-            }
-        }
+        ScheduleSaveAndLog(player, item, "received", "");
     }
 
     void OnPlayerCreateItem(Player* player, Item* item, uint32 /*count*/) override
     {
-        if (!item)
-        {
-            return;
-        }
-
-        if (ShouldSaveItem(item))
-        {
-            _checkSaveTimer = sConfigMgr->GetOption<uint32>("ModSaveInventory.SaveInterval", 5000);
-            if (sConfigMgr->GetOption<bool>("ModSaveInventory.LogLootedItems", true))
-            {
-                LOG_INFO("items", "SaveInventory: Player {} ({}) looted item {} (GUID: {})", player->GetName(), player->GetGUID().GetCounter(), item->GetEntry(), item->GetGUID().GetCounter());
-            }
-        }
+        ScheduleSaveAndLog(player, item, "crafted", "");
     }
-    void OnPlayerAfterStoreOrEquipNewItem(Player* player, uint32 /*vendorslot*/, Item* item, uint8 /*count*/, uint8 /*bag*/, uint8 /*slot*/, ItemTemplate const* /*pProto*/, Creature* /*pVendor*/, VendorItem const* /*crItem*/, bool /*bStore*/) override
+
+    void OnPlayerAfterStoreOrEquipNewItem(Player* player, uint32 /*vendorslot*/, Item* item, uint8 /*count*/, uint8 /*bag*/, uint8 /*slot*/, ItemTemplate const* /*pProto*/, Creature* pVendor, VendorItem const* /*crItem*/, bool /*bStore*/) override
     {
-        if (!item)
+        std::string source;
+        if (pVendor)
         {
-            return;
+            source = Acore::StringFormat(" from vendor {} (entry {}, GUID: {})", pVendor->GetName(), pVendor->GetEntry(), pVendor->GetGUID().GetCounter());
         }
 
-        if (ShouldSaveItem(item))
-        {
-            _checkSaveTimer = sConfigMgr->GetOption<uint32>("ModSaveInventory.SaveInterval", 5000);
-            if (sConfigMgr->GetOption<bool>("ModSaveInventory.LogLootedItems", true))
-            {
-                LOG_INFO("items", "SaveInventory: Player {} ({}) looted item {} (GUID: {})", player->GetName(), player->GetGUID().GetCounter(), item->GetEntry(), item->GetGUID().GetCounter());
-            }
-        }
+        ScheduleSaveAndLog(player, item, "purchased", source);
     }
 
     void OnPlayerUpdate(Player* player, uint32 diff) override
@@ -106,6 +67,44 @@ public:
     void OnPlayerLogout(Player* /*player*/) override
     {
         _checkSaveTimer = 0;
+    }
+
+    void ScheduleSaveAndLog(Player* player, Item* item, std::string_view action, std::string const& source)
+    {
+        if (!item || !ShouldSaveItem(item))
+        {
+            return;
+        }
+
+        _checkSaveTimer = sConfigMgr->GetOption<uint32>("ModSaveInventory.SaveInterval", 5000);
+
+        if (sConfigMgr->GetOption<bool>("ModSaveInventory.LogLootedItems", true))
+        {
+            LOG_INFO("items", "SaveInventory: Player {} ({}) {} item {} (GUID: {}){}",
+                player->GetName(), player->GetGUID().GetCounter(), action,
+                item->GetEntry(), item->GetGUID().GetCounter(), source);
+        }
+    }
+
+    // Item and Player GUIDs carry no entry, so only creatures/gameobjects report one.
+    static std::string DescribeLootSource(ObjectGuid lootguid)
+    {
+        if (lootguid.IsCreature())
+        {
+            return Acore::StringFormat(" from creature entry {} (GUID: {})", lootguid.GetEntry(), lootguid.GetCounter());
+        }
+
+        if (lootguid.IsGameObject())
+        {
+            return Acore::StringFormat(" from gameobject entry {} (GUID: {})", lootguid.GetEntry(), lootguid.GetCounter());
+        }
+
+        if (lootguid.IsItem())
+        {
+            return Acore::StringFormat(" from a container (GUID: {})", lootguid.GetCounter());
+        }
+
+        return "";
     }
 
     bool ShouldSaveItem(Item* item)
