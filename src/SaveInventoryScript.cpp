@@ -4,6 +4,7 @@
 
 #include "ScriptMgr.h"
 #include "Player.h"
+#include "Map.h"
 #include "Creature.h"
 #include "Config.h"
 #include "Chat.h"
@@ -80,9 +81,15 @@ public:
 
         if (sConfigMgr->GetOption<bool>("ModSaveInventory.LogLootedItems", true))
         {
-            LOG_INFO("items", "SaveInventory: Player {} ({}) {} item {} (GUID: {}){}",
+            std::string instanceInfo;
+            if (Map* map = player->GetMap(); map && map->IsDungeon())
+            {
+                instanceInfo = Acore::StringFormat(" [instance map {}, save ID {}]", map->GetId(), map->GetInstanceId());
+            }
+
+            LOG_INFO("items", "SaveInventory: Player {} ({}) {} item {} (GUID: {}){}{}",
                 player->GetName(), player->GetGUID().GetCounter(), action,
-                item->GetEntry(), item->GetGUID().GetCounter(), source);
+                item->GetEntry(), item->GetGUID().GetCounter(), source, instanceInfo);
         }
     }
 
