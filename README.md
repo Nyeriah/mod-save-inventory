@@ -53,10 +53,29 @@ This module offers two options to select which items to automatically save once 
         Example:     "16328 16329"
         Default:     "" - None, empty list.
 
+Separately, the module can report a loot window the first time it is opened, before anything is taken. This writes to its own log file, not to the looted items log:
+
+3) ModSaveInventory.LogLootWindow
+
+        Description: Print the contents of a loot window to the log file when it is first opened.
+                     Only applies inside instances, and only to boss corpses and gameobjects.
+        Default:     0 - Disabled
+                     1 - Enabled
+
+        Example output:
+                     SaveInventory: Loot: 603, 4711, creature Flame Leviathan (entry 33113), Items: 45038, 45087
+                     SaveInventory: Players eligible: Thrall (12), Jaina (34)
+
 ### 3) Add the `Appender` and `Logger` from below to your `worldserver.conf`
 
         Appender.Items=2,5,15,LootItem_%s.log
         Logger.items= 4,Items
+
+If you enable `ModSaveInventory.LogLootWindow`, add this second pair as well. Without it the loot
+window lines fall back to the root logger and end up in the server log.
+
+        Appender.LootWindow=2,5,15,LootWindow_%s.log
+        Logger.lootwindow= 4,LootWindow
 
 ## License
 

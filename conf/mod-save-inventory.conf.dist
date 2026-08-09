@@ -57,3 +57,21 @@ ModSaveInventory.SaveInterval = 5000
 #
 
 ModSaveInventory.LogLootedItems = 1
+
+#
+#    ModSaveInventory.LogLootWindow
+#        Description: Print the contents of a loot window to the log file when it is first
+#                     opened, before anything is looted. Only applies inside instances, and
+#                     only to boss corpses and gameobjects.
+#
+#                     Writes to its own file. Add these to worldserver.conf, otherwise the
+#                     lines fall back to the root logger and end up in the server log:
+#
+#                         Appender.LootWindow=2,5,15,LootWindow_%s.log
+#                         Logger.lootwindow= 4,LootWindow
+#
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+
+ModSaveInventory.LogLootWindow = 0

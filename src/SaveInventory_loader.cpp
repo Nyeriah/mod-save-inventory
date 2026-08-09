@@ -4,9 +4,11 @@
 
 // From SC
 void AddSaveInventoryScript();
+void AddSaveInventoryLootLogScript();
 
 void Addmod_save_inventoryScripts()
 {
     AddSaveInventoryScript();
+    AddSaveInventoryLootLogScript();
 }
 
